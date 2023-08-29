@@ -1,5 +1,7 @@
 import React from "react";
-import { IResourceComponentsProps, useTranslate, useGo, useGetToPath } from "@refinedev/core";
+import { 
+    IResourceComponentsProps, useOne, useTranslate 
+} from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import {
     ScrollArea,
@@ -15,16 +17,18 @@ import {
     List, 
     EditButton,
     ShowButton,
-    DeleteButton
+    DeleteButton,
+    ListButton,
+    CreateButton
 } from "@refinedev/mantine";
-import { IconDatabase } from '@tabler/icons-react';
+
 import { IProject } from "interfaces";
 import { 
     IconSettings
 } from '@tabler/icons-react';
 import type { ColumnDef, flexRender, createColumnHelper } from "@tanstack/react-table";
 import { ColumnFilter, ColumnSorter } from "../../components/table";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const rowflexRender =  (Comp:any, props: any) =>  {
     return <Text>{props.cell ? props.cell.column.columnDef.cell(props.cell.getContext()) : props.getValue()}</Text>
@@ -34,55 +38,51 @@ const headerflexRender =  (Comp:any, props: any) =>  {
     return <Text>{props.column.columnDef.header}</Text>
 }
 
-export const ProjectList: React.FC<IResourceComponentsProps> = () => {
-    const navigate = useNavigate();
+export const ParameterList: React.FC<IResourceComponentsProps> = () => {
     const t = useTranslate();
-    const go = useGo();
-    const getToPath = useGetToPath();
-    const _to = getToPath({
-        resource: {
-            name:  "/projects/:projectId/parameters",
-            identifier: "parameters",
-        },
-        action: "list",
-        meta: {
-            projectId: 1,
-        },
-    });
+    let { projectId } = useParams();
 
     const columns = React.useMemo<ColumnDef<any>[]>(
         () => [
             {
                 id: "id",
-                header: t("projects.fields.id"),
+                header: t("parameters.fields.id"),
                 accessorKey: "id",
                 enableColumnFilter: false,
             },
             {
                 id: "name",
-                header: t("projects.fields.name"),
+                header: t("parameters.fields.name"),
                 accessorKey: "name",
                 meta: {
                     filterOperator: "eq",
                 },
             },
             {
-                id: "cateogry",
-                header: t("projects.fields.category"),
-                accessorKey: "category",
+                id: "label",
+                header: t("parameters.fields.label"),
+                accessorKey: "label",
+                meta: {
+                    filterOperator: "eq",
+                },
+            },
+            {
+                id: "required",
+                header: t("parameters.fields.required"),
+                accessorKey: "required",
                 meta: {
                     filterOperator: "eq",
                 },
             },
             {
                 id: "description",
-                header: t("projects.fields.description"),
+                header: t("parameters.fields.description"),
                 accessorKey: "description"
             },
             {
-                id: "visibility",
-                header: t("projects.fields.visibility"),
-                accessorKey: "visibility",
+                id: "validation",
+                header: t("parameters.fields.validation"),
+                accessorKey: "validation",
                 enableColumnFilter: false
             },
             {
@@ -108,18 +108,7 @@ export const ProjectList: React.FC<IResourceComponentsProps> = () => {
                                 hideText
                                 recordItemId={getValue() as string}
                             />
-                             <Button  
-                                onClick={() => {
-                                    //window.location.href= `projects/${getValue()}/data`;
-                                    navigate(`/projects/${getValue()}/data`);
-                                }}
-                                variant="default" leftIcon={<IconDatabase size="1.2rem" />}></Button>
-                             <Button 
-                                onClick={() => {
-                                    //window.location.href= `projects/${getValue()}/parameters`;
-                                    navigate(`/projects/${getValue()}/parameters`);
-                                }}
-                                variant="filled">Parameters</Button>
+                           
                         </Group>
                     );
                 },
@@ -139,6 +128,12 @@ export const ProjectList: React.FC<IResourceComponentsProps> = () => {
             tableQueryResult: { data: tableData },
         },
     } = useTable({
+        refineCoreProps: {
+            resource: `projects/${projectId}/parameters`,
+            meta: {
+                projectId
+            }
+        },
         columns,
         // pagination: {
         //     mode: 'server',
@@ -153,13 +148,25 @@ export const ProjectList: React.FC<IResourceComponentsProps> = () => {
             ...prev.meta,
         },
     }));
+    
+    const { data : projectData, isLoading : projectIsLoading, isError : projectIsError } = useOne({
+        resource: `projects`,
+        id: projectId + "",
+    });
 
-
-
+    console.log(projectData);
     return (
         <List 
-            
-            title="Projects">
+            headerButtons={[
+                <ListButton 
+                    resource="projects" meta={{title: 'Project'}}>Projects</ListButton>, 
+                <CreateButton></CreateButton>
+            ]}
+
+            title={`Parameters ${projectData ? " for " + projectData?.data?.name : ""}`} 
+            canCreate={true}
+            //resource={`projects/${projectId}/parameters`}
+            >
             <ScrollArea>
                 <Table highlightOnHover>
                 <thead>

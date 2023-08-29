@@ -1,23 +1,21 @@
-import {
-  useGetIdentity,
-  useGetLocale,
-  useSetLocale,
-} from "@pankod/refine-core";
+import { useGetIdentity, useGetLocale, useSetLocale } from "@refinedev/core";
 import {
   ActionIcon,
   Group,
-  MantineHeader,
+  Header as MantineHeader,
   Title,
   Avatar,
   useMantineColorScheme,
   Menu,
-} from "@pankod/refine-mantine";
+} from "@mantine/core";
 import { IconSun, IconMoonStars, IconLanguage } from "@tabler/icons";
 
 import i18n from "i18n";
 
 export const Header: React.FC = () => {
-  const { data: user } = useGetIdentity();
+  const { data: user } = useGetIdentity({
+    v3LegacyAuthProviderCompatible: true
+  });
   const showUserInfo = user && (user.name || user.avatar);
 
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();

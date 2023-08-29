@@ -1,17 +1,9 @@
-import {
-    useTranslate,
-} from "@pankod/refine-core";
-import {
-    Edit,
-    Select,
-    TextInput,
-    useForm,
-    useSelect,
-    Text,
-} from "@pankod/refine-mantine";
+import { useTranslate } from "@refinedev/core";
+import { Edit, useForm, useSelect, ListButton } from "@refinedev/mantine";
+import { Select, TextInput, Text, Textarea} from "@mantine/core";
 import { RichTextEditor } from "@mantine/rte";
 
-export const SchoolEdit: React.FC = () => {
+export const ProjectEdit: React.FC = () => {
         const t = useTranslate();
     
     const { 
@@ -22,124 +14,64 @@ export const SchoolEdit: React.FC = () => {
     } = useForm({
         initialValues: {
             name: "",
-            motto: "",
-            about: "",
-            email: "",
-            phone: "",
-            emblem: "",
-            school_key: "",
-            school_type_id: "",
-            physical_address: "",
-            website: "",
-            p_o_box: ""
+            description: "",
+            visibility: "",
+            category: "",
         },
         validate: {
             name: (value) => (value.length < 2 ? "Too short name" : null),
-            phone: (value) => (value.length < 2 ? "Too short phone" : null),
-            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-            motto: (value) =>
-                value.length <= 0 ? "Motto is required" : null,
-            about: (value) =>
-                value.length < 10 ? "Too short about" : null,
+            description: (value) =>  (value.length < 2 ? "Too short name" : null),
+            visibility: (value) =>  (value.length < 2 ? "Too short name" : null),
+          
         },
         refineCoreProps: {
             warnWhenUnsavedChanges: true,
         },
     });
 
-    const { selectProps } = useSelect({
-        resource: "school_types",
-        defaultValue: queryResult?.data?.data.school_type_id,
-        optionLabel: "name",
-        optionValue: "id",
-    });
+
 
     return (
-        <Edit saveButtonProps={saveButtonProps}>
+        <Edit 
+        headerButtons={<ListButton resource="projects" meta={{title: 'Project'}}>Projects</ListButton>}
+            saveButtonProps={saveButtonProps} title="Edit Project">
             <form>
             <TextInput
                     mt={8}
-                        label={t("schools.fields.name")}
-                        placeholder={t("schools.fields.name")}
+                        label={t("projects.fields.name")}
+                        placeholder={t("projects.fields.name")}
                     {...getInputProps("name")}
                 />
-               
-                <TextInput
-                    mt={8}
-                        label={t("schools.fields.email")}
-                        placeholder={t("schools.form.placeholders.email")}
-                    {...getInputProps("email")}
-                    
-                />
-               
-               <TextInput
-                    mt={8}
-                        label={t("schools.fields.phone")}
-                        placeholder={t("schools.fields.phone")}
-                    {...getInputProps("phone")}
-                />
-               
-               <TextInput
-                    mt={8}
-                        label={t("schools.fields.emblem")}
-                        placeholder={t("schools.fields.emblem")}
-                    {...getInputProps("emblem")}
-                />
-               
-               <TextInput
-                    mt={8}
-                        label={t("schools.fields.motto")}
-                        placeholder={t("schools.fields.motto")}
-                    {...getInputProps("motto")}
-                />
 
-                <TextInput
-                    mt={8}
-                        label={t("schools.fields.school_key")}
-                        placeholder={t("schools.fields.school_key")}
-                    {...getInputProps("school_key")}
-                />
-
-                <TextInput
-                    mt={8}
-                        label={t("schools.fields.p_o_box")}
-                        placeholder={t("schools.fields.p_o_box")}
-                    {...getInputProps("p_o_box")}
-                />
-
-                <TextInput
-                    mt={8}
-                        label={t("schools.fields.website")}
-                        placeholder={t("schools.fields.website")}
-                    {...getInputProps("website")}
-                />
-
-                <TextInput
-                    mt={8}
-                        label={t("schools.fields.physical_address")}
-                        placeholder={t("schools.fields.physical_address")}
-                    {...getInputProps("physical_address")}
-                />
-
-        
                 <Select
                     mt={8}
-                    label={t("schools.fields.school_type")}
+                    label={t("projects.fields.category")}
                     placeholder="Pick one"
-                    {...getInputProps("school_type_id")}
-                    {...selectProps}
+                    {...getInputProps("category")}
+                    defaultValue="human"
+                    data={[
+                        { label: "Human", value: "human" },
+                        { label: "Animals", value: "animals" },
+                        { label: "Environment", value: "environment" }
+                    ]}
+                />
+               
+               <Select
+                    mt={8}
+                    label={t("projects.fields.visibility")}
+                    placeholder="Pick one"
+                    {...getInputProps("visibility")}
+                    defaultValue="private"
+                    data={[
+                        { label: "Private", value: "private" },
+                        { label: "Public", value: "public" }
+                    ]}
                 />
 
-                <Text mt={8} weight={500} size="sm" color="#212529">
-                        {t("schools.fields.about")}
-                </Text>
-
-                <RichTextEditor {...getInputProps("about")} />
-                {errors.about && (
-                    <Text mt={2} weight={500} size="xs" color="red">
-                        {errors.about}
-                    </Text>
-                )}
+                <Textarea 
+                    label={t("projects.fields.description")}
+                    {...getInputProps("description")}>
+                </Textarea>
             </form>
         </Edit>
     );

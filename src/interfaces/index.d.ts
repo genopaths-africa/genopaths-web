@@ -20,3 +20,15 @@ export interface ISchool {
 export interface ColumnButtonProps {
     column: Column<any, any>;
 }
+
+
+type IProject = {
+    id: number;
+    name: string;
+    description: string;
+  };
+
+type ILogin = {
+    email: string;
+    password: string;
+}

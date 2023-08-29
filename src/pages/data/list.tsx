@@ -1,5 +1,7 @@
 import React from "react";
-import { IResourceComponentsProps, useTranslate, useGo, useGetToPath } from "@refinedev/core";
+import { 
+    IResourceComponentsProps, useList, useOne, useTranslate 
+} from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import {
     ScrollArea,
@@ -15,16 +17,19 @@ import {
     List, 
     EditButton,
     ShowButton,
-    DeleteButton
+    DeleteButton,
+    ListButton,
+    CreateButton,
+    RefreshButton
 } from "@refinedev/mantine";
-import { IconDatabase } from '@tabler/icons-react';
+
 import { IProject } from "interfaces";
 import { 
     IconSettings
 } from '@tabler/icons-react';
 import type { ColumnDef, flexRender, createColumnHelper } from "@tanstack/react-table";
 import { ColumnFilter, ColumnSorter } from "../../components/table";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const rowflexRender =  (Comp:any, props: any) =>  {
     return <Text>{props.cell ? props.cell.column.columnDef.cell(props.cell.getContext()) : props.getValue()}</Text>
@@ -34,99 +39,39 @@ const headerflexRender =  (Comp:any, props: any) =>  {
     return <Text>{props.column.columnDef.header}</Text>
 }
 
-export const ProjectList: React.FC<IResourceComponentsProps> = () => {
-    const navigate = useNavigate();
+export const DataList: React.FC<IResourceComponentsProps> = () => {
     const t = useTranslate();
-    const go = useGo();
-    const getToPath = useGetToPath();
-    const _to = getToPath({
-        resource: {
-            name:  "/projects/:projectId/parameters",
-            identifier: "parameters",
-        },
-        action: "list",
-        meta: {
-            projectId: 1,
-        },
+    let { projectId } = useParams();
+
+    const [parameters, setParameters] = React.useState<any[]>([]);
+    const [cols, setCols] = React.useState<any[]>([]);
+
+
+    const { data: _parameters , isLoading: parametersLoading, isError: loadingParamError } = useList({
+        resource: `projects/${projectId}/parameters`,
     });
 
     const columns = React.useMemo<ColumnDef<any>[]>(
-        () => [
-            {
-                id: "id",
-                header: t("projects.fields.id"),
-                accessorKey: "id",
-                enableColumnFilter: false,
-            },
-            {
-                id: "name",
-                header: t("projects.fields.name"),
-                accessorKey: "name",
-                meta: {
-                    filterOperator: "eq",
-                },
-            },
-            {
-                id: "cateogry",
-                header: t("projects.fields.category"),
-                accessorKey: "category",
-                meta: {
-                    filterOperator: "eq",
-                },
-            },
-            {
-                id: "description",
-                header: t("projects.fields.description"),
-                accessorKey: "description"
-            },
-            {
-                id: "visibility",
-                header: t("projects.fields.visibility"),
-                accessorKey: "visibility",
-                enableColumnFilter: false
-            },
-            {
-                id: "actions",
-                accessorKey: "id",
-                header: "Actions",
-                enableColumnFilter: false,
-                cell: function render({ getValue }) {
-                    
-                    return (
-                        <Group spacing="xs" noWrap>
-                            {
-                            // <ShowButton
-                            //     hideText
-                            //     recordItemId={getValue() as string}
-                            // />
-                            }
-                            <EditButton
-                                hideText
-                                recordItemId={getValue() as string}
-                            />
-                            <DeleteButton
-                                hideText
-                                recordItemId={getValue() as string}
-                            />
-                             <Button  
-                                onClick={() => {
-                                    //window.location.href= `projects/${getValue()}/data`;
-                                    navigate(`/projects/${getValue()}/data`);
-                                }}
-                                variant="default" leftIcon={<IconDatabase size="1.2rem" />}></Button>
-                             <Button 
-                                onClick={() => {
-                                    //window.location.href= `projects/${getValue()}/parameters`;
-                                    navigate(`/projects/${getValue()}/parameters`);
-                                }}
-                                variant="filled">Parameters</Button>
-                        </Group>
-                    );
-                },
-            },
-        ],
-        [],
+        () => {
+            let _cols: any = [];
+            _parameters?.data.forEach((param: any) => {
+                _cols.push({
+                    id: param.name,
+                    header: param.label,
+                    accessorKey: `data.${param.name}`,
+                    meta: {
+                        filterOperator: "eq",
+                    },
+                    key: param.name
+                });
+            });
+
+            return _cols;   
+
+        },
+        [_parameters?.data],
     );
+
 
     const {
         getHeaderGroups,
@@ -139,6 +84,12 @@ export const ProjectList: React.FC<IResourceComponentsProps> = () => {
             tableQueryResult: { data: tableData },
         },
     } = useTable({
+        refineCoreProps: {
+            resource: `projects/${projectId}/data`,
+            meta: {
+                projectId
+            }
+        },
         columns,
         // pagination: {
         //     mode: 'server',
@@ -153,13 +104,26 @@ export const ProjectList: React.FC<IResourceComponentsProps> = () => {
             ...prev.meta,
         },
     }));
+    
+    const { data : projectData, isLoading : projectIsLoading, isError : projectIsError } = useOne({
+        resource: `projects`,
+        id: projectId + "",
+    });
 
-
-
+    console.log(projectData);
     return (
         <List 
-            
-            title="Projects">
+            headerButtons={[
+                <ListButton 
+                    resource="projects" meta={{title: 'Project'}}>Projects</ListButton>, 
+                <RefreshButton resource="data"></RefreshButton>,
+                //<CreateButton></CreateButton>,
+            ]}
+
+            title={`Data ${projectData ? " for " + projectData?.data?.name : ""}`} 
+            canCreate={true}
+            //resource={`projects/${projectId}/parameters`}
+            >
             <ScrollArea>
                 <Table highlightOnHover>
                 <thead>

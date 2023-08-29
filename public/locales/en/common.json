@@ -108,25 +108,41 @@
   "dashboard": {
     "title": "Dashboard"
   },
-  "posts": {
-    "posts": "Posts",
+ 
+  "projects": {
+    "projects": "Projects",
     "fields": {
       "id": "Id",
-      "title": "Title",
-      "category": {
-        "title": "Category",
-        "filter": {
-          "placeholder": "Select Category"
-        }
-      },
-      "status": {
-        "title": "Status",
-        "published": "Published",
-        "draft": "Draft",
-        "rejected": "Rejected"
-      },
-      "content": "Content",
-      "createdAt": "Created At"
+      "name": "Name",
+      "category": "Category",
+      "required": "Required",
+      "description": "Description",
+      "visibility": "Visibility",
+      "created_at": "Created At",
+      "updated_at": "Update At"
+    },
+    "titles": {
+      "create": "Create Post",
+      "edit": "Edit Post",
+      "list": "Posts",
+      "show": "Show Post"
+    }
+  },
+  "parameters": {
+    "parameters": "Parameters",
+    "fields": {
+      "id": "Id",
+      "name": "Name",
+      "label": "Label",
+      "required": "Required",
+      "description": "Description",
+      "visibility": "Visibility",
+      "project_id": "Project ID",
+      "validation": "Validation",
+      "created_at": "Created At",
+      "created_by": "Created By",
+      "updated_at": "Update At",
+      "updated_by": "Update By"
     },
     "titles": {
       "create": "Create Post",
