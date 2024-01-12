@@ -27,8 +27,8 @@ import { RefineKbarProvider } from "@refinedev/kbar";
 import { Header } from "components/layout";
 import { OffLayoutArea } from "components/offLayoutArea";
 import { authProvider } from "./authProvider";
-import { ProjectList, ProjectCreate, ProjectEdit } from "pages/projects";
-import { ParameterList, ParameterCreate, ParameterEdit } from "pages/parameters";
+import { ProjectList, ProjectCreate, ProjectEdit, ProjectAnalysis } from "pages/projects";
+import { ParameterList, ParameterCreate, ParameterEdit, ParameterRules } from "pages/parameters";
 import { DataList } from "pages/data";
 import { HeroText } from 'pages/landing/index';
 import { ThemedLayoutV2 } from 'components/themedLayout';
@@ -178,11 +178,16 @@ function App() {
                       <Route index element={<ProjectList />} />
                       <Route path="create" element={<ProjectCreate />} />
                       <Route path="edit/:id" element={<ProjectEdit />} />
+                      <Route path="analysis/:id" element={<ProjectAnalysis />} />
                     </Route>
                     <Route path="projects/:projectId/parameters">
                       <Route index element={<ParameterList />} />
                       <Route path="create" element={<ParameterCreate />} />
                       <Route path="edit/:id" element={<ParameterEdit />} />
+                      <Route path="rules" element={<ParameterRules />} />
+                    </Route>
+                    <Route path="projects/:projectId/analysis">
+                      <Route index element={<ProjectAnalysis />} />
                     </Route>
                     <Route path="projects/:projectId/data">
                       <Route index element={<DataList />} />

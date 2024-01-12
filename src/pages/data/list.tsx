@@ -1,6 +1,6 @@
 import React from "react";
 import { 
-    IResourceComponentsProps, useList, useOne, useTranslate 
+    IResourceComponentsProps, useExport, useImport, useList, useOne, useTranslate 
 } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import {
@@ -20,7 +20,9 @@ import {
     DeleteButton,
     ListButton,
     CreateButton,
-    RefreshButton
+    RefreshButton,
+    ImportButton,
+    ExportButton
 } from "@refinedev/mantine";
 
 import { IProject } from "interfaces";
@@ -50,6 +52,8 @@ export const DataList: React.FC<IResourceComponentsProps> = () => {
     const { data: _parameters , isLoading: parametersLoading, isError: loadingParamError } = useList({
         resource: `projects/${projectId}/parameters`,
     });
+
+
 
     const columns = React.useMemo<ColumnDef<any>[]>(
         () => {
@@ -110,12 +114,18 @@ export const DataList: React.FC<IResourceComponentsProps> = () => {
         id: projectId + "",
     });
 
+    const { inputProps, isLoading } = useImport();
+   // const { inputProps as exportInputPros, isLoading as exportIsLoading } = useExport();
+   const { triggerExport } = useExport();
+
     console.log(projectData);
     return (
         <List 
             headerButtons={[
                 <ListButton 
                     resource="projects" meta={{title: 'Project'}}>Projects</ListButton>, 
+                <ImportButton inputProps={inputProps} loading={isLoading}></ImportButton>,
+                <ExportButton></ExportButton>,
                 <RefreshButton resource="data"></RefreshButton>,
                 //<CreateButton></CreateButton>,
             ]}

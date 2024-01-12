@@ -20,7 +20,8 @@ import {
 import { IconDatabase } from '@tabler/icons-react';
 import { IProject } from "interfaces";
 import { 
-    IconSettings
+    IconSettings,
+    IconChartLine
 } from '@tabler/icons-react';
 import type { ColumnDef, flexRender, createColumnHelper } from "@tanstack/react-table";
 import { ColumnFilter, ColumnSorter } from "../../components/table";
@@ -114,6 +115,12 @@ export const ProjectList: React.FC<IResourceComponentsProps> = () => {
                                     navigate(`/projects/${getValue()}/data`);
                                 }}
                                 variant="default" leftIcon={<IconDatabase size="1.2rem" />}></Button>
+                             <Button  
+                                onClick={() => {
+                                    //window.location.href= `projects/${getValue()}/data`;
+                                    navigate(`/projects/${getValue()}/analysis`);
+                                }}
+                                variant="default" leftIcon={<IconChartLine size="1.2rem" />}></Button>
                              <Button 
                                 onClick={() => {
                                     //window.location.href= `projects/${getValue()}/parameters`;

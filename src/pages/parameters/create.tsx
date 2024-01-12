@@ -15,7 +15,8 @@ export const ParameterCreate: React.FC = () => {
             label: "",
             description: "",
             visibility: "private",
-            project_id: projectId
+            project_id: projectId,
+            access: "restricted",
         },
         validate: {
             name: (value) => (value.length < 2 ? "Too short name" : null),
@@ -71,6 +72,21 @@ export const ParameterCreate: React.FC = () => {
                         { label: "Recommended", value: "recommended" },
                     ]}
                 />
+
+
+                <Select
+                    mt={8}
+                    label="Access"
+                    placeholder="Pick one"
+                    {...getInputProps("access")}
+                    defaultValue="2"
+                    data={[
+                        { label: "Restricted", value: "restricted" },
+                        { label: "Optional", value: "optional" },
+                        { label: "Open", value: "open" },
+                    ]}
+                />
+
 
                 <Textarea 
                     label={t("projects.fields.description")}

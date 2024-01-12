@@ -246,7 +246,7 @@ export const ThemedSiderV2: React.FC<RefineThemedLayoutV2SiderProps> = ({
               borderBottom: `1px solid ${borderColor}`,
             }}
           >
-            <RenderToTitle collapsed={false} />
+            <RenderToTitle collapsed={false} text="GenoPaths"/>
           </Navbar.Section>
           <Navbar.Section component={ScrollArea} grow mx="-xs" px="xs">
             {renderSider()}
@@ -286,7 +286,7 @@ export const ThemedSiderV2: React.FC<RefineThemedLayoutV2SiderProps> = ({
               borderBottom: `1px solid ${borderColor}`,
             }}
           >
-            <RenderToTitle collapsed={siderCollapsed} />
+            <RenderToTitle collapsed={siderCollapsed} text="GenoPaths"/>
           </Flex>
           <Navbar.Section
             grow

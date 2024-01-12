@@ -1,6 +1,6 @@
 import React from "react";
 import { 
-    IResourceComponentsProps, useOne, useTranslate 
+    IResourceComponentsProps, useOne, useTranslate, useImport
 } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import {
@@ -19,7 +19,9 @@ import {
     ShowButton,
     DeleteButton,
     ListButton,
-    CreateButton
+    CreateButton,
+    ImportButton,
+    ExportButton
 } from "@refinedev/mantine";
 
 import { IProject } from "interfaces";
@@ -154,13 +156,22 @@ export const ParameterList: React.FC<IResourceComponentsProps> = () => {
         id: projectId + "",
     });
 
+    const { inputProps, isLoading } = useImport();
+
     console.log(projectData);
     return (
         <List 
             headerButtons={[
                 <ListButton 
                     resource="projects" meta={{title: 'Project'}}>Projects</ListButton>, 
-                <CreateButton></CreateButton>
+                <ImportButton inputProps={inputProps} loading={isLoading}></ImportButton>,
+                <ExportButton></ExportButton>,
+                <CreateButton></CreateButton>,
+                <Button 
+                    onClick={() => {
+                        window.location.href = `/projects/${projectId}/parameters/rules`;
+                    }}
+                    resource={`projects`}>Validation/Transformation Rules</Button>
             ]}
 
             title={`Parameters ${projectData ? " for " + projectData?.data?.name : ""}`} 
